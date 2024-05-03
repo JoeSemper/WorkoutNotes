@@ -11,6 +11,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+-keepclassmembers public class * extends androidx.lifecycle.ViewModel { public <init>(...); }
 
 # Uncomment this to preserve the line number information for
 # debugging stack traces.
