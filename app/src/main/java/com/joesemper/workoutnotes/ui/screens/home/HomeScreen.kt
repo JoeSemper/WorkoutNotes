@@ -1,4 +1,4 @@
-package com.joesemper.workoutnotes.ui.screens
+package com.joesemper.workoutnotes.ui.screens.home
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,13 +11,12 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-
 
 
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
+    navigateToNewWorkout: () -> Unit
 ) {
 
     val state = viewModel.uiState.collectAsState()
@@ -33,6 +32,19 @@ fun HomeScreen(
             ) {
                 Text(
                     text = "New program"
+                )
+            }
+        }
+
+        item {
+            Card(
+                modifier = Modifier
+                    .clickable { navigateToNewWorkout() }
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "New workout"
                 )
             }
         }

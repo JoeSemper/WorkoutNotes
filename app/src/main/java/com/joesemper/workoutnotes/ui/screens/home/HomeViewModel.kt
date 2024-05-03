@@ -1,4 +1,4 @@
-package com.joesemper.workoutnotes.ui.screens
+package com.joesemper.workoutnotes.ui.screens.home
 
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
@@ -37,14 +37,14 @@ class HomeViewModel @Inject constructor(
             val date = Calendar.getInstance().time.time
             repository.insertProgram(
                 DatabaseProgram(
-                    id = Random(date).nextInt(),
+                    id = Random(date).nextLong(),
                     title = Random(date).nextInt().toString()
                 )
             )
         }
     }
 
-    fun deleteProgram(id: Int) {
+    fun deleteProgram(id: Long) {
         viewModelScope.launch {
             repository.deleteProgram(id)
         }

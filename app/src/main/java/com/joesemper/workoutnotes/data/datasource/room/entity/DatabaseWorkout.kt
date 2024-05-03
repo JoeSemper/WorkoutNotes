@@ -6,19 +6,19 @@ import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
 @Entity(
-    foreignKeys = [
-        ForeignKey(
-            entity = DatabaseProgram::class,
-            childColumns = ["programId"],
-            parentColumns = ["id"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+//    foreignKeys = [
+//        ForeignKey(
+//            entity = DatabaseProgram::class,
+//            childColumns = ["programId"],
+//            parentColumns = ["id"],
+//            onDelete = ForeignKey.CASCADE
+//        )
+//    ]
 )
 
 data class DatabaseWorkout(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo val programId: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
+    @ColumnInfo val programId: Long = 0,
     @ColumnInfo val title: String = "",
     @ColumnInfo val description: String = "",
 )

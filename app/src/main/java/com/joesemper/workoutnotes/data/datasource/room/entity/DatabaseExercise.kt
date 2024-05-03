@@ -6,6 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity
 data class DatabaseExercise(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo val title: String = ""
 )

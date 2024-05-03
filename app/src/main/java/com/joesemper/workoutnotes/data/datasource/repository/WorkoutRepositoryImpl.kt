@@ -18,7 +18,11 @@ class WorkoutRepositoryImpl @Inject constructor(
 
     override fun getAllWorkouts(): Flow<List<DatabaseWorkout>> = databaseDao.getAllWorkouts()
 
+    override fun getWorkoutById(workoutId: Long) = databaseDao.getWorkoutById(workoutId)
+
     override fun getAllSets(): Flow<List<DatabaseSet>> = databaseDao.getAllSets()
+
+    override fun getSetsForWorkout(workoutId: Long) = databaseDao.getSetsForWorkout(workoutId)
 
     override suspend fun insertProgram(program: DatabaseProgram) =
         databaseDao.insertProgram(program)
@@ -42,11 +46,11 @@ class WorkoutRepositoryImpl @Inject constructor(
     override suspend fun updateExercise(exercise: DatabaseExercise) =
         databaseDao.updateExercise(exercise)
 
-    override suspend fun deleteProgram(id: Int) = databaseDao.deleteProgram(id)
+    override suspend fun deleteProgram(id: Long) = databaseDao.deleteProgram(id)
 
-    override suspend fun deleteSet(id: Int) = databaseDao.deleteSet(id)
+    override suspend fun deleteSet(id: Long) = databaseDao.deleteSet(id)
 
-    override suspend fun deleteWorkout(id: Int) = databaseDao.deleteWorkout(id)
+    override suspend fun deleteWorkout(id: Long) = databaseDao.deleteWorkout(id)
 
-    override suspend fun deleteExercise(id: Int) = databaseDao.deleteExercise(id)
+    override suspend fun deleteExercise(id: Long) = databaseDao.deleteExercise(id)
 }

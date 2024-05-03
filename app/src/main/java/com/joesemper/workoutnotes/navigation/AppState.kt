@@ -10,6 +10,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.joesemper.workoutnotes.navigation.home.HOME_GRAPH
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.HOME_ROUTE
+import com.joesemper.workoutnotes.navigation.home.HomeDestinations.NEW_WORKOUT_ROUTE
 import com.joesemper.workoutnotes.navigation.home.HomeState
 
 @Composable
@@ -33,6 +34,17 @@ class AppState(
             navController.navigate("$HOME_GRAPH/$HOME_ROUTE") {
                 launchSingleTop = true
 //                restoreState = true
+                popUpTo(findStartDestination(navController.graph).id) {
+//                    saveState = true
+                }
+            }
+        }
+    }
+
+    override fun navigateToNewWorkout(from: NavBackStackEntry) {
+        if (from.lifecycleIsResumed()) {
+            navController.navigate("$HOME_GRAPH/$NEW_WORKOUT_ROUTE") {
+                launchSingleTop = true
                 popUpTo(findStartDestination(navController.graph).id) {
 //                    saveState = true
                 }

@@ -23,14 +23,20 @@ interface DatabaseDao {
     @Query("SELECT * FROM DatabaseWorkout")
     fun getAllWorkouts(): Flow<List<DatabaseWorkout>>
 
+    @Query("SELECT * FROM DatabaseWorkout WHERE id = :workoutId")
+    fun getWorkoutById(workoutId: Long): Flow<DatabaseWorkout>
+
     @Query("SELECT * FROM DatabaseSet")
     fun getAllSets(): Flow<List<DatabaseSet>>
+
+    @Query("SELECT * FROM DatabaseSet WHERE workoutId = :workoutId")
+    fun getSetsForWorkout(workoutId: Long): Flow<List<DatabaseSet>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProgram(program: DatabaseProgram)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertWorkout(workout: DatabaseWorkout)
+    suspend fun insertWorkout(workout: DatabaseWorkout): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSets(sets: List<DatabaseSet>)
@@ -51,14 +57,14 @@ interface DatabaseDao {
     suspend fun updateExercise(exercise: DatabaseExercise)
 
     @Query("DELETE FROM DatabaseProgram WHERE id =:id")
-    suspend fun deleteProgram(id: Int)
+    suspend fun deleteProgram(id: Long)
 
     @Query("DELETE FROM DatabaseSet WHERE id =:id")
-    suspend fun deleteSet(id: Int)
+    suspend fun deleteSet(id: Long)
 
     @Query("DELETE FROM DatabaseWorkout WHERE id =:id")
-    suspend fun deleteWorkout(id: Int)
+    suspend fun deleteWorkout(id: Long)
 
     @Query("DELETE FROM DatabaseExercise WHERE id =:id")
-    suspend fun deleteExercise(id: Int)
+    suspend fun deleteExercise(id: Long)
 }
