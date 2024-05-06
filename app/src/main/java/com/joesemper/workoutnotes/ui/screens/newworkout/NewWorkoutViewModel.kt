@@ -37,34 +37,20 @@ class NewWorkoutViewModel @Inject constructor(
                     title = generateWorkoutName()
                 )
             )
-            repository.getWorkoutById(workoutId).collect { workout ->
+            repository.getWorkoutWithSetsById(workoutId).collect { workoutWithSets ->
+
                 _uiState.update { state ->
                     NewWorkoutUiState.Loaded(
                         data = NewWorkoutData(
-                            workout = workout,
-                            sets = emptyList()
+                            workout = workoutWithSets.workout,
+                            sets = workoutWithSets.sets
                         )
                     )
                 }
-            }
-        }
-    }
-
-    private fun subscribeOnWorkout(id: Long) {
-        viewModelScope.launch {
-            repository.getSetsForWorkout(id).collect { sets ->
-                _uiState.update { state ->
-                    if (state is NewWorkoutUiState.Loaded) {
-                        NewWorkoutUiState.Loaded(data = state.data.copy(sets = sets))
-                    } else {
-                        state
-                    }
-                }
 
             }
         }
     }
-
 
     fun addNewWorkoutSet() {
         viewModelScope.launch {

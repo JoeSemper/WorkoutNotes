@@ -4,6 +4,7 @@ import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExercise
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseProgram
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseSet
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseWorkout
+import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseWorkoutWithSets
 import kotlinx.coroutines.flow.Flow
 
 interface WorkoutRepository {
@@ -11,6 +12,7 @@ interface WorkoutRepository {
     fun getAllExercises(): Flow<List<DatabaseExercise>>
     fun getAllWorkouts(): Flow<List<DatabaseWorkout>>
     fun getWorkoutById(workoutId: Long): Flow<DatabaseWorkout>
+    fun getWorkoutWithSetsById(workoutId: Long): Flow<DatabaseWorkoutWithSets>
     fun getAllSets(): Flow<List<DatabaseSet>>
     fun getSetsForWorkout(workoutId: Long): Flow<List<DatabaseSet>>
     suspend fun insertProgram(program: DatabaseProgram)

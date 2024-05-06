@@ -10,6 +10,7 @@ import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExercise
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseProgram
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseSet
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseWorkout
+import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseWorkoutWithSets
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -25,6 +26,9 @@ interface DatabaseDao {
 
     @Query("SELECT * FROM DatabaseWorkout WHERE id = :workoutId")
     fun getWorkoutById(workoutId: Long): Flow<DatabaseWorkout>
+
+    @Query("SELECT * FROM DatabaseWorkout WHERE id = :workoutId")
+    fun getWorkoutWithSetsById(workoutId: Long): Flow<DatabaseWorkoutWithSets>
 
     @Query("SELECT * FROM DatabaseSet")
     fun getAllSets(): Flow<List<DatabaseSet>>

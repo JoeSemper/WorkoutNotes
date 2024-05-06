@@ -20,6 +20,8 @@ class WorkoutRepositoryImpl @Inject constructor(
 
     override fun getWorkoutById(workoutId: Long) = databaseDao.getWorkoutById(workoutId)
 
+    override fun getWorkoutWithSetsById(workoutId: Long) = databaseDao.getWorkoutWithSetsById(workoutId)
+
     override fun getAllSets(): Flow<List<DatabaseSet>> = databaseDao.getAllSets()
 
     override fun getSetsForWorkout(workoutId: Long) = databaseDao.getSetsForWorkout(workoutId)
