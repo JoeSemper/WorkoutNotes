@@ -3,8 +3,10 @@ package com.joesemper.workoutnotes.navigation.home
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.HOME_ROUTE
+import com.joesemper.workoutnotes.navigation.home.HomeDestinations.NEW_EXERCISE_ROUTE
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.NEW_WORKOUT_ROUTE
 import com.joesemper.workoutnotes.ui.screens.home.HomeScreen
+import com.joesemper.workoutnotes.ui.screens.newexercise.NewExerciseScreen
 import com.joesemper.workoutnotes.ui.screens.newworkout.NewWorkoutScreen
 
 const val HOME_GRAPH = "home"
@@ -12,6 +14,9 @@ const val HOME_GRAPH = "home"
 object HomeDestinations {
     const val HOME_ROUTE = "root"
     const val NEW_WORKOUT_ROUTE = "newWorkout"
+    const val WORKOUT_ID = "workoutId"
+    const val NEW_EXERCISE_ROUTE = "newExercise"
+
 }
 
 fun NavGraphBuilder.addHomeGraph(
@@ -26,7 +31,13 @@ fun NavGraphBuilder.addHomeGraph(
 
     composable("$HOME_GRAPH/$NEW_WORKOUT_ROUTE") { from ->
         NewWorkoutScreen(
-            navigateHome = { homeState.navigateHome(from) }
+            navigateHome = { homeState.navigateHome(from) },
+            navigateToNewExercise = { homeState.navigateToNewExercise(from) }
         )
     }
+
+    composable("$HOME_GRAPH/$NEW_EXERCISE_ROUTE") { from ->
+        NewExerciseScreen()
+    }
+
 }
