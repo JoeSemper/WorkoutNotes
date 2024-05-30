@@ -53,9 +53,9 @@ class AppState(
         }
     }
 
-    override fun navigateToNewExercise(from: NavBackStackEntry) {
+    override fun navigateToNewExercise(from: NavBackStackEntry, workoutId: Long) {
         if (from.lifecycleIsResumed()) {
-            navController.navigate("$HOME_GRAPH/$NEW_EXERCISE_ROUTE") {
+            navController.navigate("$HOME_GRAPH/$NEW_EXERCISE_ROUTE/$workoutId") {
 
             }
         }

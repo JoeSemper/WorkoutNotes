@@ -1,7 +1,6 @@
 package com.joesemper.workoutnotes.data.datasource.room.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -20,6 +19,9 @@ interface DatabaseDao {
 
     @Query("SELECT * FROM DatabaseExercise")
     fun getAllExercises(): Flow<List<DatabaseExercise>>
+
+    @Query("SELECT * FROM DatabaseExercise WHERE title = :exercise")
+    suspend fun getExerciseByTitle(exercise: String): DatabaseExercise?
 
     @Query("SELECT * FROM DatabaseWorkout")
     fun getAllWorkouts(): Flow<List<DatabaseWorkout>>
@@ -46,7 +48,10 @@ interface DatabaseDao {
     suspend fun insertSets(sets: List<DatabaseSet>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertExercises(exercises: List<DatabaseProgram>)
+    suspend fun insertExercise(exercise: DatabaseExercise)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertExercises(exercises: List<DatabaseExercise>)
 
     @Update(entity = DatabaseProgram::class)
     suspend fun updateProgram(program: DatabaseProgram)

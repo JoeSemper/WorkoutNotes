@@ -73,7 +73,7 @@ import kotlinx.coroutines.launch
 fun NewWorkoutScreen(
     viewModel: NewWorkoutViewModel = hiltViewModel(),
     navigateHome: () -> Unit,
-    navigateToNewExercise: () -> Unit
+    navigateToNewExercise: (Long) -> Unit
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -89,29 +89,31 @@ fun NewWorkoutScreen(
         )
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        floatingActionButton = {
-            AddPaymentFab(
-                modifier = Modifier.padding(bottom = 32.dp),
-                isVisibleBecauseOfScrolling = listState.isScrollingUp(),
-                onClick = { navigateToNewExercise() }
-            )
-        },
-        floatingActionButtonPosition = FabPosition.End
-    ) { paddingValues ->
-
-        when (val state = uiState) {
-            NewWorkoutUiState.Loading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    FullScreenLoadingView()
-                }
+    when (val state = uiState) {
+        NewWorkoutUiState.Loading -> {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                FullScreenLoadingView()
             }
+        }
 
-            is NewWorkoutUiState.Loaded -> {
+        is NewWorkoutUiState.Loaded -> {
+            Scaffold(
+                modifier = Modifier.fillMaxSize(),
+                floatingActionButton = {
+                    AddPaymentFab(
+                        modifier = Modifier.padding(bottom = 32.dp),
+                        isVisibleBecauseOfScrolling = listState.isScrollingUp(),
+                        onClick = {
+                            navigateToNewExercise(state.data.workout.id)
+                        }
+                    )
+                },
+                floatingActionButtonPosition = FabPosition.End
+            ) { paddingValues ->
+
                 NewWorkoutContent(
                     modifier = Modifier.padding(paddingValues),
                     state = state.data,
@@ -121,7 +123,6 @@ fun NewWorkoutScreen(
             }
 
         }
-
     }
 }
 

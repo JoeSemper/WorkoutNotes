@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.Flow
 interface WorkoutRepository {
     fun getAllPrograms(): Flow<List<DatabaseProgram>>
     fun getAllExercises(): Flow<List<DatabaseExercise>>
+    suspend fun getExerciseByTitle(exercise: String): DatabaseExercise?
     fun getAllWorkouts(): Flow<List<DatabaseWorkout>>
     fun getWorkoutById(workoutId: Long): Flow<DatabaseWorkout>
     fun getWorkoutWithSetsById(workoutId: Long): Flow<DatabaseWorkoutWithSets>
@@ -18,7 +19,8 @@ interface WorkoutRepository {
     suspend fun insertProgram(program: DatabaseProgram)
     suspend fun insertWorkout(workout: DatabaseWorkout): Long
     suspend fun insertSets(sets: List<DatabaseSet>)
-    suspend fun insertExercises(exercises: List<DatabaseProgram>)
+    suspend fun insertExercise(exercise: DatabaseExercise)
+    suspend fun insertExercises(exercises: List<DatabaseExercise>)
     suspend fun updateProgram(program: DatabaseProgram)
     suspend fun updateWorkout(workout: DatabaseWorkout)
     suspend fun updateSet(set: DatabaseSet)

@@ -16,11 +16,15 @@ class WorkoutRepositoryImpl @Inject constructor(
 
     override fun getAllExercises(): Flow<List<DatabaseExercise>> = databaseDao.getAllExercises()
 
+    override suspend fun getExerciseByTitle(exercise: String) =
+        databaseDao.getExerciseByTitle(exercise)
+
     override fun getAllWorkouts(): Flow<List<DatabaseWorkout>> = databaseDao.getAllWorkouts()
 
     override fun getWorkoutById(workoutId: Long) = databaseDao.getWorkoutById(workoutId)
 
-    override fun getWorkoutWithSetsById(workoutId: Long) = databaseDao.getWorkoutWithSetsById(workoutId)
+    override fun getWorkoutWithSetsById(workoutId: Long) =
+        databaseDao.getWorkoutWithSetsById(workoutId)
 
     override fun getAllSets(): Flow<List<DatabaseSet>> = databaseDao.getAllSets()
 
@@ -34,7 +38,10 @@ class WorkoutRepositoryImpl @Inject constructor(
 
     override suspend fun insertSets(sets: List<DatabaseSet>) = databaseDao.insertSets(sets)
 
-    override suspend fun insertExercises(exercises: List<DatabaseProgram>) =
+    override suspend fun insertExercise(exercise: DatabaseExercise) =
+        databaseDao.insertExercise(exercise)
+
+    override suspend fun insertExercises(exercises: List<DatabaseExercise>) =
         databaseDao.insertExercises(exercises)
 
     override suspend fun updateProgram(program: DatabaseProgram) =

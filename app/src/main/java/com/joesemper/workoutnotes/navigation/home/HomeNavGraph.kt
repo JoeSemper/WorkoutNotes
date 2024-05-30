@@ -1,10 +1,13 @@
 package com.joesemper.workoutnotes.navigation.home
 
 import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.HOME_ROUTE
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.NEW_EXERCISE_ROUTE
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.NEW_WORKOUT_ROUTE
+import com.joesemper.workoutnotes.navigation.home.HomeDestinations.WORKOUT_ID
 import com.joesemper.workoutnotes.ui.screens.home.HomeScreen
 import com.joesemper.workoutnotes.ui.screens.newexercise.NewExerciseScreen
 import com.joesemper.workoutnotes.ui.screens.newworkout.NewWorkoutScreen
@@ -32,12 +35,19 @@ fun NavGraphBuilder.addHomeGraph(
     composable("$HOME_GRAPH/$NEW_WORKOUT_ROUTE") { from ->
         NewWorkoutScreen(
             navigateHome = { homeState.navigateHome(from) },
-            navigateToNewExercise = { homeState.navigateToNewExercise(from) }
+            navigateToNewExercise = { workoutId ->
+                homeState.navigateToNewExercise(from,  workoutId)
+            }
         )
     }
 
-    composable("$HOME_GRAPH/$NEW_EXERCISE_ROUTE") { from ->
-        NewExerciseScreen()
+    composable(
+        "$HOME_GRAPH/$NEW_EXERCISE_ROUTE/{$WORKOUT_ID}",
+        arguments = listOf(navArgument(WORKOUT_ID) { type = NavType.LongType })
+    ) { from ->
+        NewExerciseScreen(
+            navigateBack = upPress
+        )
     }
 
 }
