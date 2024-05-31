@@ -11,23 +11,27 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -35,6 +39,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.addPathNodes
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
@@ -49,9 +54,8 @@ fun NewExerciseScreen(
     viewModel: NewExerciseViewModel = hiltViewModel(),
     navigateBack: () -> Unit
 ) {
-    val uiState by viewModel.exercises.collectAsStateWithLifecycle()
-
-    var selectedExercise by mutableStateOf("")
+    val exerciseList by viewModel.exercises.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -74,101 +78,159 @@ fun NewExerciseScreen(
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            ExerciseInputView(
-                suggestions = uiState,
-                selectedText = selectedExercise,
-                onTextChange = { selectedExercise = it }
+
+            NewExerciseContentView(
+                modifier = Modifier.fillMaxWidth(),
+                exerciseList = exerciseList,
+                selectedExercise = uiState.selectedExercise.value,
+                onExerciseTextChange = { uiState.selectedExercise.value = it },
+                setsList = uiState.sets,
+                onAddNewSet = { viewModel.addNewWeight() }
             )
-
-            Button(onClick = { viewModel.createExercise(selectedExercise) }) {
-                Text(text = "Apply")
-            }
-
         }
     }
-
 }
 
 @Composable
-fun NewWorkoutSetView(
+fun NewExerciseContentView(
     modifier: Modifier = Modifier,
-    onApplyClick: () -> Unit,
-    onCancelClick: () -> Unit
+    exerciseList: List<String> = emptyList(),
+    selectedExercise: String,
+    onExerciseTextChange: (String) -> Unit,
+    setsList: List<SetParameters>,
+    onAddNewSet: () -> Unit
 ) {
-    Column(
-        modifier = modifier.fillMaxWidth()
+    LazyColumn(
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val title = remember { mutableStateOf("") }
-        val weight = remember { mutableStateOf("") }
-        val sets = remember { mutableStateOf("") }
-        val count = remember { mutableStateOf("") }
+        item {
+            ExerciseInputView(
+                suggestions = exerciseList,
+                selectedText = selectedExercise,
+                onTextChange = onExerciseTextChange
+            )
+        }
 
-        OutlinedTextField(
+        items(count = setsList.size) {
+            SetAdjustmentView(
+                state = setsList[it],
+                onAddNewSetClick = onAddNewSet
+            )
+        }
+
+        item {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Center
+            ) {
+                AssistChip(
+                    onClick = onAddNewSet,
+                    label = { Text(text = stringResource(R.string.new_weight)) },
+                    leadingIcon = { Icon(imageVector = Icons.Default.Add, contentDescription = null) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun SetAdjustmentView(
+    modifier: Modifier = Modifier,
+    state: SetParameters,
+    onAddNewSetClick: () -> Unit
+) {
+
+    Column(
+        modifier = modifier.fillMaxWidth(),
+        horizontalAlignment = Alignment.Start,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+
+        Row(
             modifier = Modifier.fillMaxWidth(),
-            value = title.value,
-            label = { Text(text = "Exercise") },
-            onValueChange = { title.value = it }
-        )
-
-        com.joesemper.workoutnotes.ui.screens.newworkout.Demo_ExposedDropdownMenuBox()
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = stringResource(R.string.weight) + " " + "${state.index + 1}",
+                style = MaterialTheme.typography.titleSmall
+            )
+            HorizontalDivider(
+                modifier = Modifier.padding(start = 8.dp)
+            )
+        }
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            OutlinedTextField(
-                modifier = Modifier.weight(1f),
-                value = weight.value,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                label = { Text(text = "Weight") },
-                onValueChange = { weight.value = it }
-            )
 
-            OutlinedTextField(
-                modifier = Modifier.weight(1f),
-                value = count.value,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                label = { Text(text = "Count") },
-                onValueChange = { count.value = it }
-            )
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.weight),
+                    style = MaterialTheme.typography.labelMedium
+                )
 
-            OutlinedTextField(
-                modifier = Modifier.weight(1f),
-                value = sets.value,
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-                label = { Text(text = "Sets") },
-                onValueChange = { sets.value = it }
-            )
-
-        }
-
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.End
-        ) {
-            IconButton(onClick = { onCancelClick() }) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = null,
-                    tint = Color.Red
+                OutlinedTextField(
+                    value = state.weight.value,
+                    onValueChange = { state.weight.value = it },
+                    trailingIcon = { Text(text = stringResource(R.string.kg)) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
 
-            Spacer(modifier = Modifier.width(8.dp))
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = stringResource(R.string.reps),
+                    style = MaterialTheme.typography.labelMedium
+                )
 
-            IconButton(onClick = { onApplyClick() }) {
-                Icon(
-                    imageVector = Icons.Default.Check,
-                    contentDescription = null,
-                    tint = Color.Green
+                OutlinedTextField(
+                    value = state.repetitions.value,
+                    onValueChange = { state.repetitions.value = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
-        }
 
-        Spacer(modifier = Modifier.height(64.dp))
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    text = stringResource(id = R.string.sets),
+                    style = MaterialTheme.typography.labelMedium
+                )
+
+                OutlinedTextField(
+                    value = state.sets.value,
+                    onValueChange = { state.sets.value = it },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                )
+            }
+
+        }
     }
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -181,38 +243,43 @@ fun ExerciseInputView(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    ExposedDropdownMenuBox(
-        modifier = modifier,
-        expanded = expanded,
-        onExpandedChange = { expanded = !expanded }
+    Box(
+        modifier = modifier.fillMaxWidth()
     ) {
-        OutlinedTextField(
-            value = selectedText,
-            onValueChange = { onTextChange(it) },
-            trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .menuAnchor()
-        )
-
-        ExposedDropdownMenu(
-            modifier = modifier.fillMaxWidth(),
+        ExposedDropdownMenuBox(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onExpandedChange = { expanded = !expanded }
         ) {
-            suggestions.filter {
-                it.startsWith(selectedText)
-            }.forEach { item ->
-                DropdownMenuItem(
-                    text = { Text(text = item) },
-                    onClick = {
-                        onTextChange(item)
-                        expanded = false
-                    }
-                )
+            OutlinedTextField(
+                value = selectedText,
+                onValueChange = { onTextChange(it) },
+                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .menuAnchor()
+            )
+
+            ExposedDropdownMenu(
+                modifier = modifier.fillMaxWidth(),
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                suggestions.filter {
+                    it.startsWith(selectedText)
+                }.forEach { item ->
+                    DropdownMenuItem(
+                        text = { Text(text = item) },
+                        onClick = {
+                            onTextChange(item)
+                            expanded = false
+                        }
+                    )
+                }
             }
         }
     }
+
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

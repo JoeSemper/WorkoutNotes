@@ -27,4 +27,5 @@ data class DatabaseSet(
     @ColumnInfo val workoutId: Long = 0,
     @ColumnInfo val weight: Int = 0,
     @ColumnInfo val repetitions: Int = 0,
+    @ColumnInfo val sets: Int = 0
 )

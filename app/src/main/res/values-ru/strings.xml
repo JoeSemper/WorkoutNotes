@@ -2,4 +2,9 @@
 <resources>
     <string name="app_name">Workout Notes</string>
     <string name="new_exercise">New exercise</string>
+    <string name="weight">Weight</string>
+    <string name="kg">kg</string>
+    <string name="reps">Reps.</string>
+    <string name="sets">Sets</string>
+    <string name="new_weight">New weight</string>
 </resources>
