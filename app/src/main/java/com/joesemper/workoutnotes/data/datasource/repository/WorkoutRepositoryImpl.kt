@@ -2,6 +2,7 @@ package com.joesemper.workoutnotes.data.datasource.repository
 
 import com.joesemper.workoutnotes.data.datasource.room.dao.DatabaseDao
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExercise
+import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseSet
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseProgram
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseSet
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseWorkout
@@ -23,12 +24,16 @@ class WorkoutRepositoryImpl @Inject constructor(
 
     override fun getWorkoutById(workoutId: Long) = databaseDao.getWorkoutById(workoutId)
 
-    override fun getWorkoutWithSetsById(workoutId: Long) =
-        databaseDao.getWorkoutWithSetsById(workoutId)
+    override fun getWorkoutWithExerciseSetsById(workoutId: Long) =
+        databaseDao.getWorkoutWithExerciseSetsById(workoutId)
 
     override fun getAllSets(): Flow<List<DatabaseSet>> = databaseDao.getAllSets()
 
-    override fun getSetsForWorkout(workoutId: Long) = databaseDao.getSetsForWorkout(workoutId)
+    override fun getExerciseSetsForWorkout(workoutId: Long) =
+        databaseDao.getExerciseSetsForWorkout(workoutId)
+
+    override suspend fun getExerciseSetById(exerciseSetId: Long) =
+        databaseDao.getExerciseSetById(exerciseSetId)
 
     override suspend fun insertProgram(program: DatabaseProgram) =
         databaseDao.insertProgram(program)
@@ -43,6 +48,9 @@ class WorkoutRepositoryImpl @Inject constructor(
 
     override suspend fun insertExercises(exercises: List<DatabaseExercise>) =
         databaseDao.insertExercises(exercises)
+
+    override suspend fun insertExerciseSet(exerciseSet: DatabaseExerciseSet) =
+        databaseDao.insertExerciseSet(exerciseSet)
 
     override suspend fun updateProgram(program: DatabaseProgram) =
         databaseDao.updateProgram(program)
@@ -62,4 +70,6 @@ class WorkoutRepositoryImpl @Inject constructor(
     override suspend fun deleteWorkout(id: Long) = databaseDao.deleteWorkout(id)
 
     override suspend fun deleteExercise(id: Long) = databaseDao.deleteExercise(id)
+
+    override suspend fun deleteExerciseSet(id: Long) = databaseDao.deleteExerciseSet(id)
 }

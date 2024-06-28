@@ -3,6 +3,8 @@ package com.joesemper.workoutnotes.ui.screens.newworkout
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joesemper.workoutnotes.data.datasource.repository.WorkoutRepository
+import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseSet
+import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseSetWithExercise
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseSet
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseWorkout
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,12 +39,24 @@ class NewWorkoutViewModel @Inject constructor(
                     title = generateWorkoutName()
                 )
             )
-            repository.getWorkoutWithSetsById(workoutId).collect { workoutWithSets ->
+
+//            repository.getExerciseSetsForWorkout(workoutId).collect {
+//                _uiState.update { state ->
+//                    NewWorkoutUiState.Loaded(
+//                        data = NewWorkoutData(
+//                            workout = workoutId,
+//                            sets = it
+//                        )
+//                    )
+//                }
+//            }
+
+            repository.getWorkoutWithExerciseSetsById(workoutId).collect { workoutWithSets ->
 
                 _uiState.update { state ->
                     NewWorkoutUiState.Loaded(
                         data = NewWorkoutData(
-                            workout = workoutWithSets.workout,
+                            workout = workoutWithSets.workout.id,
                             sets = workoutWithSets.sets
                         )
                     )
@@ -52,24 +66,6 @@ class NewWorkoutViewModel @Inject constructor(
         }
     }
 
-    fun addNewWorkoutSet() {
-        viewModelScope.launch {
-            when (val state = _uiState.value) {
-                is NewWorkoutUiState.Loaded -> {
-                    repository.insertSets(
-                        listOf(
-                            DatabaseSet(
-                                workoutId = state.data.workout.id
-                            )
-                        )
-                    )
-                }
-
-                else -> {}
-            }
-
-        }
-    }
 }
 
 
@@ -86,6 +82,6 @@ sealed class NewWorkoutUiState() {
 }
 
 data class NewWorkoutData(
-    val workout: DatabaseWorkout,
-    val sets: List<DatabaseSet>
+    val workout: Long,
+    val sets: List<DatabaseExerciseSetWithExercise>
 )

@@ -87,6 +87,13 @@ fun NewExerciseScreen(
                 setsList = uiState.sets,
                 onAddNewSet = { viewModel.addNewWeight() }
             )
+
+            Button(onClick = {
+                viewModel.saveExerciseSets()
+                navigateBack()
+            }) {
+                Text(text = stringResource(R.string.save_exercise))
+            }
         }
     }
 }
@@ -126,8 +133,13 @@ fun NewExerciseContentView(
             ) {
                 AssistChip(
                     onClick = onAddNewSet,
-                    label = { Text(text = stringResource(R.string.new_weight)) },
-                    leadingIcon = { Icon(imageVector = Icons.Default.Add, contentDescription = null) }
+                    label = { Text(text = stringResource(R.string.add_weight)) },
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            contentDescription = null
+                        )
+                    }
                 )
             }
         }
@@ -182,6 +194,7 @@ fun SetAdjustmentView(
                     value = state.weight.value,
                     onValueChange = { state.weight.value = it },
                     trailingIcon = { Text(text = stringResource(R.string.kg)) },
+                    placeholder = { Text(text = stringResource(R.string.set_parameters_placeholder)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
@@ -203,6 +216,7 @@ fun SetAdjustmentView(
                 OutlinedTextField(
                     value = state.repetitions.value,
                     onValueChange = { state.repetitions.value = it },
+                    placeholder = { Text(text = stringResource(R.string.set_parameters_placeholder)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
@@ -223,6 +237,7 @@ fun SetAdjustmentView(
                 OutlinedTextField(
                     value = state.sets.value,
                     onValueChange = { state.sets.value = it },
+                    placeholder = { Text(text = stringResource(R.string.set_parameters_placeholder)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )

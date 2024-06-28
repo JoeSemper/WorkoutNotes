@@ -7,4 +7,7 @@
     <string name="reps">Reps.</string>
     <string name="sets">Sets</string>
     <string name="new_weight">New weight</string>
+    <string name="add_weight">Add weight</string>
+    <string name="set_parameters_placeholder">0</string>
+    <string name="save_exercise">Save exercise</string>
 </resources>

@@ -25,3 +25,5 @@ fun LazyListState.isScrollingUp(): Boolean {
         }
     }.value
 }
+
+fun String.convertToInt() = if (this.isEmpty()) 0 else this.toInt()

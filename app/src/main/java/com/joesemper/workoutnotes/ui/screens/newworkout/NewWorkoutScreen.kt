@@ -82,7 +82,6 @@ fun NewWorkoutScreen(
 
     var showDialog by remember { mutableStateOf(false) }
 
-
     if (showDialog) {
         AddNewExerciseDialog(
             onDismiss = { showDialog = false }
@@ -107,7 +106,7 @@ fun NewWorkoutScreen(
                         modifier = Modifier.padding(bottom = 32.dp),
                         isVisibleBecauseOfScrolling = listState.isScrollingUp(),
                         onClick = {
-                            navigateToNewExercise(state.data.workout.id)
+                            navigateToNewExercise(state.data.workout)
                         }
                     )
                 },
@@ -118,7 +117,7 @@ fun NewWorkoutScreen(
                     modifier = Modifier.padding(paddingValues),
                     state = state.data,
                     listState = listState,
-                    onNewSetClick = { viewModel.addNewWorkoutSet() }
+                    onNewSetClick = {  }
                 )
             }
 
@@ -192,39 +191,6 @@ fun NewWorkoutContent(
 
     var expanded by remember { mutableStateOf(false) }
 
-    val sheetState = rememberModalBottomSheetState()
-    val scope = rememberCoroutineScope()
-    var showBottomSheet by remember { mutableStateOf(false) }
-
-    if (showBottomSheet) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                showBottomSheet = false
-            },
-            sheetState = sheetState
-        ) {
-
-            Button(onClick = {
-                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                    if (!sheetState.isVisible) {
-                        showBottomSheet = false
-                    }
-                }
-            }) {
-                Text("Hide bottom sheet")
-            }
-
-            NewWorkoutSetView(
-                onApplyClick = {},
-                onCancelClick = {}
-            )
-
-            Spacer(modifier = modifier.height(64.dp))
-
-
-        }
-    }
-
     LazyColumn(
         modifier = modifier
             .fillMaxSize(),
@@ -233,17 +199,7 @@ fun NewWorkoutContent(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(8.dp)
     ) {
-        item {
-            Button(onClick = {
-                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                    if (!sheetState.isVisible) {
-                        showBottomSheet = true
-                    }
-                }
-            }) {
-                Text(text = "Open bottom sheet")
-            }
-        }
+
         item {
             Card(
                 modifier = Modifier.fillMaxWidth()
@@ -257,14 +213,14 @@ fun NewWorkoutContent(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = state.workout.title,
+                        text = state.workout.toString(),
                         style = MaterialTheme.typography.labelMedium
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = state.workout.description
+                        text = state.workout.toString()
                     )
                 }
 
@@ -282,41 +238,8 @@ fun NewWorkoutContent(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Text(text = state.sets[it].id.toString())
+                    Text(text = state.sets[it].exercise.title)
                 }
-            }
-        }
-
-        item {
-            Card(
-                modifier = Modifier
-                    .animateContentSize()
-                    .fillMaxWidth()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .animateContentSize()
-                        .fillMaxWidth()
-                        .padding(8.dp)
-                ) {
-                    if (expanded) {
-                        NewWorkoutSetView(
-                            onApplyClick = {
-                                onNewSetClick()
-                            },
-                            onCancelClick = {
-                                expanded = false
-                            }
-                        )
-                    } else {
-                        AddNewWorkoutSetView(
-                            onClick = {
-                                expanded = true
-                            }
-                        )
-                    }
-                }
-
             }
         }
     }
