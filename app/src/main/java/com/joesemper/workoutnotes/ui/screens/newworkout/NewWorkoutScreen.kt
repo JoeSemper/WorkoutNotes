@@ -2,12 +2,7 @@ package com.joesemper.workoutnotes.ui.screens.newworkout
 
 import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.core.keyframes
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -27,10 +22,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
@@ -42,32 +35,27 @@ import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.joesemper.workoutnotes.R
 import com.joesemper.workoutnotes.ui.utils.isScrollingUp
-import kotlinx.coroutines.launch
 
 @Composable
 fun NewWorkoutScreen(
@@ -102,11 +90,11 @@ fun NewWorkoutScreen(
             Scaffold(
                 modifier = Modifier.fillMaxSize(),
                 floatingActionButton = {
-                    AddPaymentFab(
+                    AddExerciseFab(
                         modifier = Modifier.padding(bottom = 32.dp),
                         isVisibleBecauseOfScrolling = listState.isScrollingUp(),
                         onClick = {
-                            navigateToNewExercise(state.data.workout)
+                            navigateToNewExercise(state.data.workout.id)
                         }
                     )
                 },
@@ -117,7 +105,6 @@ fun NewWorkoutScreen(
                     modifier = Modifier.padding(paddingValues),
                     state = state.data,
                     listState = listState,
-                    onNewSetClick = {  }
                 )
             }
 
@@ -150,7 +137,7 @@ fun AddNewExerciseDialog(
 }
 
 @Composable
-private fun AddPaymentFab(
+private fun AddExerciseFab(
     modifier: Modifier,
     isVisibleBecauseOfScrolling: Boolean,
     onClick: () -> Unit
@@ -163,9 +150,9 @@ private fun AddPaymentFab(
         exit = slideOutVertically()
     ) {
         ExtendedFloatingActionButton(
-            text = { Text(text = "Add Payment") },
+            text = { Text(text = stringResource(R.string.add_exercise)) },
             onClick = onClick,
-            icon = { Icon(Icons.Filled.Add, "Add Payment") }
+            icon = { Icon(Icons.Filled.Add, null) }
         )
     }
 }
@@ -186,7 +173,6 @@ fun NewWorkoutContent(
     modifier: Modifier = Modifier,
     state: NewWorkoutData,
     listState: LazyListState,
-    onNewSetClick: () -> Unit
 ) {
 
     var expanded by remember { mutableStateOf(false) }
@@ -213,14 +199,14 @@ fun NewWorkoutContent(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        text = state.workout.toString(),
+                        text = state.workout.title,
                         style = MaterialTheme.typography.labelMedium
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
 
                     Text(
-                        text = state.workout.toString()
+                        text = state.workout.id.toString()
                     )
                 }
 
@@ -239,6 +225,7 @@ fun NewWorkoutContent(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(text = state.sets[it].exercise.title)
+                    Text(text = state.sets[it].exerciseSet.indexNumber.toString())
                 }
             }
         }

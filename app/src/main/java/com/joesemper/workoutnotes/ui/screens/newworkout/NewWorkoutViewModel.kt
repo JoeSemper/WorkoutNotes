@@ -56,7 +56,7 @@ class NewWorkoutViewModel @Inject constructor(
                 _uiState.update { state ->
                     NewWorkoutUiState.Loaded(
                         data = NewWorkoutData(
-                            workout = workoutWithSets.workout.id,
+                            workout = workoutWithSets.workout,
                             sets = workoutWithSets.sets
                         )
                     )
@@ -82,6 +82,6 @@ sealed class NewWorkoutUiState() {
 }
 
 data class NewWorkoutData(
-    val workout: Long,
+    val workout: DatabaseWorkout,
     val sets: List<DatabaseExerciseSetWithExercise>
 )

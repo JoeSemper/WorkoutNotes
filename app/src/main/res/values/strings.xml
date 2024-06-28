@@ -9,4 +9,5 @@
     <string name="add_weight">Add weight</string>
     <string name="set_parameters_placeholder">0</string>
     <string name="save_exercise">Save exercise</string>
+    <string name="add_exercise">Add exercise</string>
 </resources>

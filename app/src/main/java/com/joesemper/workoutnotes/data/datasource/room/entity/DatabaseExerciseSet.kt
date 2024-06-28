@@ -18,5 +18,6 @@ import androidx.room.PrimaryKey
 data class DatabaseExerciseSet(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo val workoutId: Long = 0,
-    @ColumnInfo val exerciseId: Long = 0
+    @ColumnInfo val exerciseId: Long = 0,
+    @ColumnInfo val indexNumber: Int = 0
 )

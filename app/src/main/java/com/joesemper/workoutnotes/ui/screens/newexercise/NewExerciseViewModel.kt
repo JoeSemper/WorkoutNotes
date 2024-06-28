@@ -11,7 +11,6 @@ import com.joesemper.workoutnotes.data.datasource.repository.WorkoutRepository
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExercise
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseSet
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseSet
-import com.joesemper.workoutnotes.navigation.home.HomeDestinations.EXERCISE_SET_ID
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.WORKOUT_ID
 import com.joesemper.workoutnotes.ui.utils.convertToInt
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -67,7 +66,8 @@ class NewExerciseViewModel @Inject constructor(
             val exerciseSetId = repository.insertExerciseSet(
                 DatabaseExerciseSet(
                     workoutId = workoutId,
-                    exerciseId = exerciseId
+                    exerciseId = exerciseId,
+                    indexNumber = repository.getLastExerciseSetIndex(workoutId).inc()
                 )
             )
 

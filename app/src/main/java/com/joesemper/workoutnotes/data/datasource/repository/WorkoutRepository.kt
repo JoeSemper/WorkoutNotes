@@ -33,4 +33,5 @@ interface WorkoutRepository {
     suspend fun deleteWorkout(id: Long)
     suspend fun deleteExercise(id: Long)
     suspend fun deleteExerciseSet(id: Long)
+    suspend fun getLastExerciseSetIndex(workoutId: Long): Int
 }

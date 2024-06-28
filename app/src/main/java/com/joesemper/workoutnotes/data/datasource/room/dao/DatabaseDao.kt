@@ -86,4 +86,7 @@ interface DatabaseDao {
 
     @Query("DELETE FROM DatabaseExerciseSet WHERE id =:id")
     suspend fun deleteExerciseSet(id: Long)
+
+    @Query("SELECT MAX(indexNumber) FROM DatabaseExerciseSet WHERE workoutId =:workoutId")
+    suspend fun getLastExerciseSetIndex(workoutId: Long): Int?
 }

@@ -72,4 +72,7 @@ class WorkoutRepositoryImpl @Inject constructor(
     override suspend fun deleteExercise(id: Long) = databaseDao.deleteExercise(id)
 
     override suspend fun deleteExerciseSet(id: Long) = databaseDao.deleteExerciseSet(id)
+
+    override suspend fun getLastExerciseSetIndex(workoutId: Long) =
+        databaseDao.getLastExerciseSetIndex(workoutId) ?: 0
 }
