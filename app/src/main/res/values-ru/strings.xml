@@ -11,4 +11,6 @@
     <string name="set_parameters_placeholder">0</string>
     <string name="save_exercise">Save exercise</string>
     <string name="add_exercise">Add exercise</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_weight">Delete weight</string>
 </resources>

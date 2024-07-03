@@ -9,6 +9,7 @@ import androidx.navigation.NavGraph
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.joesemper.workoutnotes.navigation.home.HOME_GRAPH
+import com.joesemper.workoutnotes.navigation.home.HomeDestinations.EXERCISE_SET_ID
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.HOME_ROUTE
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.NEW_EXERCISE_ROUTE
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.NEW_WORKOUT_ROUTE
@@ -53,9 +54,17 @@ class AppState(
         }
     }
 
-    override fun navigateToNewExercise(from: NavBackStackEntry, workoutId: Long) {
+    override fun navigateToNewExercise(
+        from: NavBackStackEntry,
+        workoutId: Long,
+        exerciseSetId: Long?
+    ) {
         if (from.lifecycleIsResumed()) {
-            navController.navigate("$HOME_GRAPH/$NEW_EXERCISE_ROUTE/$workoutId") {
+            navController.navigate(
+                "$HOME_GRAPH/$NEW_EXERCISE_ROUTE/$workoutId${
+                    if (exerciseSetId == null) "" else "?$EXERCISE_SET_ID=$exerciseSetId"
+                }"
+            ) {
 
             }
         }

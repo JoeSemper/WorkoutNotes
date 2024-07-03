@@ -40,17 +40,6 @@ class NewWorkoutViewModel @Inject constructor(
                 )
             )
 
-//            repository.getExerciseSetsForWorkout(workoutId).collect {
-//                _uiState.update { state ->
-//                    NewWorkoutUiState.Loaded(
-//                        data = NewWorkoutData(
-//                            workout = workoutId,
-//                            sets = it
-//                        )
-//                    )
-//                }
-//            }
-
             repository.getWorkoutWithExerciseSetsById(workoutId).collect { workoutWithSets ->
 
                 _uiState.update { state ->

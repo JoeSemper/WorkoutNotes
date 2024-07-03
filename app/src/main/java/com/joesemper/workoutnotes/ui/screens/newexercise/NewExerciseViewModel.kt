@@ -11,6 +11,7 @@ import com.joesemper.workoutnotes.data.datasource.repository.WorkoutRepository
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExercise
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseSet
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseSet
+import com.joesemper.workoutnotes.navigation.home.HomeDestinations.EXERCISE_SET_ID
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.WORKOUT_ID
 import com.joesemper.workoutnotes.ui.utils.convertToInt
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,8 +30,9 @@ class NewExerciseViewModel @Inject constructor(
     private val repository: WorkoutRepository
 ) : ViewModel() {
     private val workoutId: Long = checkNotNull(savedStateHandle[WORKOUT_ID])
+    private val exerciseSetId: Long = checkNotNull(savedStateHandle[EXERCISE_SET_ID])
 
-    private val _uiState = MutableStateFlow(NewExerciseUiState())
+    private val _uiState = MutableStateFlow(NewExerciseUiState(setId = exerciseSetId))
     val uiState = _uiState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -46,6 +48,10 @@ class NewExerciseViewModel @Inject constructor(
 
     fun addNewWeight() {
         _uiState.value.sets.add(SetParameters(index = getLastSetIndex().inc()))
+    }
+
+    fun deleteWeight() {
+        _uiState.value.sets.removeIf { it.index == getLastSetIndex() }
     }
 
     fun saveExerciseSets() {
@@ -89,6 +95,7 @@ class NewExerciseViewModel @Inject constructor(
 
 
 data class NewExerciseUiState(
+    val setId: Long,
     val selectedExercise: MutableState<String> = mutableStateOf(""),
     val sets: SnapshotStateList<SetParameters> = mutableStateListOf(SetParameters())
 ) {

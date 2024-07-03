@@ -42,6 +42,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -61,7 +62,7 @@ import com.joesemper.workoutnotes.ui.utils.isScrollingUp
 fun NewWorkoutScreen(
     viewModel: NewWorkoutViewModel = hiltViewModel(),
     navigateHome: () -> Unit,
-    navigateToNewExercise: (Long) -> Unit
+    navigateToNewExercise: (Long, Long?) -> Unit
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -69,6 +70,9 @@ fun NewWorkoutScreen(
     val listState = rememberLazyListState()
 
     var showDialog by remember { mutableStateOf(false) }
+
+    val currentNavigateToNewExercise by rememberUpdatedState(navigateToNewExercise)
+    val currentNavigateHome by rememberUpdatedState(navigateHome)
 
     if (showDialog) {
         AddNewExerciseDialog(
@@ -94,7 +98,7 @@ fun NewWorkoutScreen(
                         modifier = Modifier.padding(bottom = 32.dp),
                         isVisibleBecauseOfScrolling = listState.isScrollingUp(),
                         onClick = {
-                            navigateToNewExercise(state.data.workout.id)
+                            navigateToNewExercise(state.data.workout.id, null)
                         }
                     )
                 },
@@ -105,6 +109,7 @@ fun NewWorkoutScreen(
                     modifier = Modifier.padding(paddingValues),
                     state = state.data,
                     listState = listState,
+                    onExerciseClick = { navigateToNewExercise(state.data.workout.id, it) }
                 )
             }
 
@@ -173,6 +178,7 @@ fun NewWorkoutContent(
     modifier: Modifier = Modifier,
     state: NewWorkoutData,
     listState: LazyListState,
+    onExerciseClick: (Long) -> Unit
 ) {
 
     var expanded by remember { mutableStateOf(false) }
@@ -215,7 +221,8 @@ fun NewWorkoutContent(
 
         items(count = state.sets.size) {
             Card(
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onExerciseClick(state.sets[it].exerciseSet.id) }
             ) {
                 Column(
                     modifier = Modifier
