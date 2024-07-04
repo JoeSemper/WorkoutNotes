@@ -57,7 +57,7 @@ fun NewExerciseScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(R.string.new_exercise) + " " + uiState.setId)
+                    Text(text = stringResource(R.string.new_exercise))
                 }
             )
         }

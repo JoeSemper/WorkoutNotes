@@ -4,8 +4,8 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.joesemper.workoutnotes.navigation.home.HomeDestinations.EXERCISE_SET_ID
-import com.joesemper.workoutnotes.navigation.home.HomeDestinations.EXERCISE_SET_ID_DEFAULT
+import com.joesemper.workoutnotes.navigation.home.HomeDestinations.EXERCISE_ID
+import com.joesemper.workoutnotes.navigation.home.HomeDestinations.EXERCISE_ID_DEFAULT
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.HOME_ROUTE
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.NEW_EXERCISE_ROUTE
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.NEW_WORKOUT_ROUTE
@@ -20,9 +20,9 @@ object HomeDestinations {
     const val HOME_ROUTE = "root"
     const val NEW_WORKOUT_ROUTE = "newWorkout"
     const val WORKOUT_ID = "workoutId"
-    const val EXERCISE_SET_ID = "exerciseSetId"
+    const val EXERCISE_ID = "exerciseId"
     const val NEW_EXERCISE_ROUTE = "newExercise"
-    const val EXERCISE_SET_ID_DEFAULT = -1L
+    const val EXERCISE_ID_DEFAULT = -1L
 
 }
 
@@ -46,12 +46,12 @@ fun NavGraphBuilder.addHomeGraph(
     }
 
     composable(
-        "$HOME_GRAPH/$NEW_EXERCISE_ROUTE/{$WORKOUT_ID}?$EXERCISE_SET_ID={$EXERCISE_SET_ID}",
+        "$HOME_GRAPH/$NEW_EXERCISE_ROUTE/{$WORKOUT_ID}?$EXERCISE_ID={$EXERCISE_ID}",
         arguments = listOf(
             navArgument(WORKOUT_ID) { type = NavType.LongType },
-            navArgument(EXERCISE_SET_ID) {
+            navArgument(EXERCISE_ID) {
                 type = NavType.LongType
-                defaultValue = EXERCISE_SET_ID_DEFAULT
+                defaultValue = EXERCISE_ID_DEFAULT
             }
         )
     ) { from ->

@@ -8,10 +8,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.joesemper.workoutnotes.data.datasource.repository.WorkoutRepository
+import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseType
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExercise
-import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseSet
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseSet
-import com.joesemper.workoutnotes.navigation.home.HomeDestinations.EXERCISE_SET_ID
+import com.joesemper.workoutnotes.navigation.home.HomeDestinations.EXERCISE_ID
+import com.joesemper.workoutnotes.navigation.home.HomeDestinations.EXERCISE_ID_DEFAULT
 import com.joesemper.workoutnotes.navigation.home.HomeDestinations.WORKOUT_ID
 import com.joesemper.workoutnotes.ui.utils.convertToInt
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,14 +31,14 @@ class NewExerciseViewModel @Inject constructor(
     private val repository: WorkoutRepository
 ) : ViewModel() {
     private val workoutId: Long = checkNotNull(savedStateHandle[WORKOUT_ID])
-    private val exerciseSetId: Long = checkNotNull(savedStateHandle[EXERCISE_SET_ID])
+    private val exerciseId: Long = checkNotNull(savedStateHandle[EXERCISE_ID])
 
-    private val _uiState = MutableStateFlow(NewExerciseUiState(setId = exerciseSetId))
+    private val _uiState = MutableStateFlow(NewExerciseUiState())
     val uiState = _uiState.asStateFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val exercises = repository
-        .getAllExercises()
+        .getAllExerciseTypes()
         .mapLatest { list ->
             list.map { exercise -> exercise.title }
         }.stateIn(
@@ -45,6 +46,18 @@ class NewExerciseViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5000),
             initialValue = emptyList()
         )
+
+    init {
+        if (exerciseId != EXERCISE_ID_DEFAULT) {
+            loadExerciseData()
+        }
+    }
+
+    private fun loadExerciseData() {
+        viewModelScope.launch {
+            repository
+        }
+    }
 
     fun addNewWeight() {
         _uiState.value.sets.add(SetParameters(index = getLastSetIndex().inc()))
@@ -56,30 +69,30 @@ class NewExerciseViewModel @Inject constructor(
 
     fun saveExerciseSets() {
         viewModelScope.launch {
-            saveSets(getOrCreateExerciseId(_uiState.value.selectedExercise.value))
+            saveSets(getExerciseTypeId(_uiState.value.selectedExercise.value))
         }
     }
 
-    private suspend fun getOrCreateExerciseId(exerciseName: String): Long {
-        return repository.getExerciseByTitle(exerciseName)?.id ?: repository.insertExercise(
-            DatabaseExercise(title = exerciseName)
+    private suspend fun getExerciseTypeId(exerciseName: String): Long {
+        return repository.getExerciseTypeByTitle(exerciseName)?.id ?: repository.insertExerciseType(
+            DatabaseExerciseType(title = exerciseName)
         )
     }
 
     private fun saveSets(exerciseId: Long) {
         viewModelScope.launch {
 
-            val exerciseSetId = repository.insertExerciseSet(
-                DatabaseExerciseSet(
+            val exerciseSetId = repository.insertExercise(
+                DatabaseExercise(
                     workoutId = workoutId,
-                    exerciseId = exerciseId,
+                    exerciseTypeId = exerciseId,
                     indexNumber = repository.getLastExerciseSetIndex(workoutId).inc()
                 )
             )
 
             repository.insertSets(_uiState.value.sets.map {
                 DatabaseSet(
-                    exerciseSetId = exerciseSetId,
+                    exerciseId = exerciseSetId,
                     index = it.index,
                     weight = it.weight.value.convertToInt(),
                     repetitions = it.repetitions.value.convertToInt(),
@@ -95,7 +108,6 @@ class NewExerciseViewModel @Inject constructor(
 
 
 data class NewExerciseUiState(
-    val setId: Long,
     val selectedExercise: MutableState<String> = mutableStateOf(""),
     val sets: SnapshotStateList<SetParameters> = mutableStateListOf(SetParameters())
 ) {

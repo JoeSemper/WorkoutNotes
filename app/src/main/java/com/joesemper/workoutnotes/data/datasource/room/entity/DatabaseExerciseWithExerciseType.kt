@@ -3,11 +3,11 @@ package com.joesemper.workoutnotes.data.datasource.room.entity
 import androidx.room.Embedded
 import androidx.room.Relation
 
-data class DatabaseExerciseSetWithExercise (
-    @Embedded val exerciseSet: DatabaseExerciseSet,
+data class DatabaseExerciseWithExerciseType (
+    @Embedded val exerciseSet: DatabaseExercise,
     @Relation(
-        parentColumn = "exerciseId",
+        parentColumn = "exerciseTypeId",
         entityColumn = "id"
     )
-    val exercise: DatabaseExercise
+    val exercise: DatabaseExerciseType
 )
