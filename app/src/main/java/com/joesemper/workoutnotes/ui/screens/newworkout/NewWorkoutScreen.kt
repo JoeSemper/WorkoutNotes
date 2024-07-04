@@ -222,7 +222,7 @@ fun NewWorkoutContent(
         items(count = state.sets.size) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                onClick = { onExerciseClick(state.sets[it].exerciseSet.id) }
+                onClick = { onExerciseClick(state.sets[it].exercise.id) }
             ) {
                 Column(
                     modifier = Modifier
@@ -231,8 +231,8 @@ fun NewWorkoutContent(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.Start
                 ) {
-                    Text(text = state.sets[it].exercise.title)
-                    Text(text = state.sets[it].exerciseSet.indexNumber.toString())
+                    Text(text = state.sets[it].exerciseType.title)
+                    Text(text = state.sets[it].exercise.indexNumber.toString())
                 }
             }
         }

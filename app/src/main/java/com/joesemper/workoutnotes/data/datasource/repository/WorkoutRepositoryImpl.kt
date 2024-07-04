@@ -3,6 +3,7 @@ package com.joesemper.workoutnotes.data.datasource.repository
 import com.joesemper.workoutnotes.data.datasource.room.dao.DatabaseDao
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseType
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExercise
+import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseWithExerciseType
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseProgram
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseSet
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseWorkout
@@ -15,7 +16,8 @@ class WorkoutRepositoryImpl @Inject constructor(
 
     override fun getAllPrograms(): Flow<List<DatabaseProgram>> = databaseDao.getAllPrograms()
 
-    override fun getAllExerciseTypes(): Flow<List<DatabaseExerciseType>> = databaseDao.getAllExerciseTypes()
+    override fun getAllExerciseTypes(): Flow<List<DatabaseExerciseType>> =
+        databaseDao.getAllExerciseTypes()
 
     override suspend fun getExerciseTypeByTitle(exerciseType: String) =
         databaseDao.getExerciseTypeByTitle(exerciseType)
@@ -26,6 +28,11 @@ class WorkoutRepositoryImpl @Inject constructor(
 
     override fun getWorkoutWithExercisesById(workoutId: Long) =
         databaseDao.getWorkoutWithExercisesById(workoutId)
+
+    override fun getExerciseWithExerciseType(exerciseId: Long) =
+        databaseDao.getExerciseWithExerciseType(exerciseId)
+
+    override fun getSetsForExercise(exerciseId: Long) = databaseDao.getSetsForExercise(exerciseId)
 
     override fun getAllSets(): Flow<List<DatabaseSet>> = databaseDao.getAllSets()
 

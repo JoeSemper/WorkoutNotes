@@ -7,6 +7,7 @@ import androidx.room.Query
 import androidx.room.Update
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseType
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExercise
+import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseWithExerciseType
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseProgram
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseSet
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseWorkout
@@ -35,6 +36,12 @@ interface DatabaseDao {
 
     @Query("SELECT * FROM DatabaseWorkout WHERE id = :workoutId")
     fun getWorkoutWithExercisesById(workoutId: Long): Flow<DatabaseWorkoutWithExercises>
+
+    @Query("SELECT * FROM DatabaseExercise WHERE id = :exerciseId")
+    fun getExerciseWithExerciseType(exerciseId: Long): Flow<DatabaseExerciseWithExerciseType>
+
+    @Query("SELECT * FROM DatabaseSet WHERE exerciseId = :exerciseId")
+    fun getSetsForExercise(exerciseId: Long): Flow<List<DatabaseSet>>
 
     @Query("SELECT * FROM DatabaseSet")
     fun getAllSets(): Flow<List<DatabaseSet>>

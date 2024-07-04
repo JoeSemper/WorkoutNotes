@@ -20,6 +20,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.mapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -55,7 +56,22 @@ class NewExerciseViewModel @Inject constructor(
 
     private fun loadExerciseData() {
         viewModelScope.launch {
-            repository
+            repository.getExerciseWithExerciseType(exerciseId).collect { exercise ->
+                repository.getSetsForExercise(exerciseId).collect { sets ->
+                    _uiState.value.sets.apply {
+                        clear()
+                        addAll(sets.map { SetParameters(
+                            index = it.index,
+                            weight = mutableStateOf(it.weight.toString()),
+                            repetitions = mutableStateOf(it.repetitions.toString()),
+                            sets = mutableStateOf(it.sets.toString())
+                        ) })
+                    }
+
+                    _uiState.value.selectedExercise.value = exercise.exerciseType.title
+                }
+
+            }
         }
     }
 

@@ -4,10 +4,10 @@ import androidx.room.Embedded
 import androidx.room.Relation
 
 data class DatabaseExerciseWithExerciseType (
-    @Embedded val exerciseSet: DatabaseExercise,
+    @Embedded val exercise: DatabaseExercise,
     @Relation(
         parentColumn = "exerciseTypeId",
         entityColumn = "id"
     )
-    val exercise: DatabaseExerciseType
+    val exerciseType: DatabaseExerciseType
 )

@@ -2,6 +2,7 @@ package com.joesemper.workoutnotes.data.datasource.repository
 
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseType
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExercise
+import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseWithExerciseType
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseProgram
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseSet
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseWorkout
@@ -17,6 +18,8 @@ interface WorkoutRepository {
     fun getWorkoutWithExercisesById(workoutId: Long): Flow<DatabaseWorkoutWithExercises>
     fun getAllSets(): Flow<List<DatabaseSet>>
     fun getExercisesForWorkout(workoutId: Long): Flow<List<DatabaseExercise>>
+    fun getExerciseWithExerciseType(exerciseId: Long): Flow<DatabaseExerciseWithExerciseType>
+    fun getSetsForExercise(exerciseId: Long): Flow<List<DatabaseSet>>
     suspend fun insertExercise(exercise: DatabaseExercise): Long
     suspend fun getExerciseById(exerciseId: Long): DatabaseExercise?
     suspend fun insertProgram(program: DatabaseProgram)
