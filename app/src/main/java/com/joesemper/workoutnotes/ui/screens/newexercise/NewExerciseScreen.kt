@@ -17,6 +17,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -30,19 +31,24 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.flowWithLifecycle
 import com.joesemper.workoutnotes.R
+import kotlinx.coroutines.flow.filter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,8 +56,21 @@ fun NewExerciseScreen(
     viewModel: NewExerciseViewModel = hiltViewModel(),
     navigateBack: () -> Unit
 ) {
-    val exerciseList by viewModel.exercises.collectAsStateWithLifecycle()
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
+    val uiState = viewModel.uiState
+    val exerciseTypeVariants = uiState.exerciseTypeState.exerciseTypeVariants
+
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val currentNavigateBack by rememberUpdatedState(navigateBack)
+
+    LaunchedEffect(uiState.isSaved, lifecycle) {
+        snapshotFlow { uiState }
+            .filter { it.isSaved }
+            .flowWithLifecycle(lifecycle)
+            .collect {
+                currentNavigateBack()
+            }
+    }
 
     Scaffold(
         topBar = {
@@ -70,30 +89,42 @@ fun NewExerciseScreen(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
-            NewExerciseContentView(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .fillMaxHeight(),
-                exerciseList = exerciseList,
-                selectedExercise = uiState.selectedExercise.value,
-                onExerciseTextChange = { uiState.selectedExercise.value = it },
-                setsList = uiState.sets,
-                onAddNewWeight = viewModel::addNewWeight,
-                onDeleteWeight = viewModel::deleteWeight
-            )
+            if (uiState.isLoading) {
+                LoadingView()
+            } else {
+                NewExerciseContentView(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(1f)
+                        .fillMaxHeight(),
+                    exerciseList = exerciseTypeVariants,
+                    selectedExercise = uiState.exerciseTypeState.selectedExerciseType,
+                    onExerciseTextChange = { uiState.exerciseTypeState.updateSelectedExercise(it) },
+                    setsList = uiState.exerciseSetsState,
+                    onAddNewWeight = uiState.addNewWeight,
+                    onDeleteWeight = uiState.deleteWeight
+                )
 
-            BottomButtonsView(
-                modifier = Modifier.fillMaxWidth(),
-                onCancelClick = {
-                    navigateBack()
-                },
-                onApplyClick = {
-                    viewModel.saveExerciseSets()
-                    navigateBack()
-                }
-            )
+                BottomButtonsView(
+                    modifier = Modifier.fillMaxWidth(),
+                    onCancelClick = {
+                        navigateBack()
+                    },
+                    onApplyClick = {
+                        viewModel.saveExercise()
+                    }
+                )
+            }
         }
+    }
+}
+
+@Composable fun LoadingView() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ){
+        CircularProgressIndicator()
     }
 }
 
@@ -104,7 +135,7 @@ fun NewExerciseContentView(
     exerciseList: List<String> = emptyList(),
     selectedExercise: String,
     onExerciseTextChange: (String) -> Unit,
-    setsList: List<SetParameters>,
+    setsList: List<SetUiState>,
     onAddNewWeight: () -> Unit,
     onDeleteWeight: () -> Unit
 
@@ -187,7 +218,7 @@ fun BottomButtonsView(
 @Composable
 fun SetAdjustmentView(
     modifier: Modifier = Modifier,
-    state: SetParameters,
+    state: SetUiState,
 ) {
 
     Column(
@@ -228,8 +259,8 @@ fun SetAdjustmentView(
                 )
 
                 OutlinedTextField(
-                    value = state.weight.value,
-                    onValueChange = { state.weight.value = it },
+                    value = state.weight,
+                    onValueChange = { state.updateWeight(it) },
                     trailingIcon = { Text(text = stringResource(R.string.kg)) },
                     placeholder = { Text(text = stringResource(R.string.set_parameters_placeholder)) },
                     singleLine = true,
@@ -251,8 +282,8 @@ fun SetAdjustmentView(
                 )
 
                 OutlinedTextField(
-                    value = state.repetitions.value,
-                    onValueChange = { state.repetitions.value = it },
+                    value = state.repetitions,
+                    onValueChange = { state.updateRepetitions(it) },
                     placeholder = { Text(text = stringResource(R.string.set_parameters_placeholder)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
@@ -272,8 +303,8 @@ fun SetAdjustmentView(
                 )
 
                 OutlinedTextField(
-                    value = state.sets.value,
-                    onValueChange = { state.sets.value = it },
+                    value = state.sets,
+                    onValueChange = { state.updateSets(it) },
                     placeholder = { Text(text = stringResource(R.string.set_parameters_placeholder)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)

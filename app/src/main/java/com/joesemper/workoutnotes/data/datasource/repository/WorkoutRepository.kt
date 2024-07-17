@@ -18,10 +18,11 @@ interface WorkoutRepository {
     fun getWorkoutWithExercisesById(workoutId: Long): Flow<DatabaseWorkoutWithExercises>
     fun getAllSets(): Flow<List<DatabaseSet>>
     fun getExercisesForWorkout(workoutId: Long): Flow<List<DatabaseExercise>>
-    fun getExerciseWithExerciseType(exerciseId: Long): Flow<DatabaseExerciseWithExerciseType>
+    fun getExerciseWithExerciseType(exerciseId: Long): Flow<DatabaseExerciseWithExerciseType?>
     fun getSetsForExercise(exerciseId: Long): Flow<List<DatabaseSet>>
     suspend fun insertExercise(exercise: DatabaseExercise): Long
     suspend fun getExerciseById(exerciseId: Long): DatabaseExercise?
+    suspend fun getExerciseIndexById(exerciseId: Long): Int
     suspend fun insertProgram(program: DatabaseProgram)
     suspend fun insertWorkout(workout: DatabaseWorkout): Long
     suspend fun insertSets(sets: List<DatabaseSet>)
@@ -31,10 +32,14 @@ interface WorkoutRepository {
     suspend fun updateWorkout(workout: DatabaseWorkout)
     suspend fun updateSet(set: DatabaseSet)
     suspend fun updateExerciseType(exerciseType: DatabaseExerciseType)
+    suspend fun updateExercise(exercise: DatabaseExercise)
     suspend fun deleteProgram(id: Long)
     suspend fun deleteSet(id: Long)
     suspend fun deleteWorkout(id: Long)
     suspend fun deleteExerciseType(id: Long)
     suspend fun deleteExerciseSet(id: Long)
-    suspend fun getLastExerciseSetIndex(workoutId: Long): Int
+    suspend fun getLastExerciseIndex(workoutId: Long): Int
+    suspend fun getLastSetIndexInExercise(exerciseId: Long): Int?
+    suspend fun deleteLastSetInExercise(exerciseId: Long)
+    suspend fun deleteAllSetsInExercise(exerciseId: Long)
 }

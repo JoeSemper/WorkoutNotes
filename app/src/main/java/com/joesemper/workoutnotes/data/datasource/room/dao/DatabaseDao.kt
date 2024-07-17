@@ -28,6 +28,9 @@ interface DatabaseDao {
     @Query("SELECT * FROM DatabaseExercise WHERE id = :exerciseId")
     suspend fun getExerciseById(exerciseId: Long): DatabaseExercise?
 
+    @Query("SELECT indexNumber FROM DatabaseExercise WHERE id = :exerciseId")
+    suspend fun getExerciseIndexById(exerciseId: Long): Int?
+
     @Query("SELECT * FROM DatabaseWorkout")
     fun getAllWorkouts(): Flow<List<DatabaseWorkout>>
 
@@ -38,7 +41,7 @@ interface DatabaseDao {
     fun getWorkoutWithExercisesById(workoutId: Long): Flow<DatabaseWorkoutWithExercises>
 
     @Query("SELECT * FROM DatabaseExercise WHERE id = :exerciseId")
-    fun getExerciseWithExerciseType(exerciseId: Long): Flow<DatabaseExerciseWithExerciseType>
+    fun getExerciseWithExerciseType(exerciseId: Long): Flow<DatabaseExerciseWithExerciseType?>
 
     @Query("SELECT * FROM DatabaseSet WHERE exerciseId = :exerciseId")
     fun getSetsForExercise(exerciseId: Long): Flow<List<DatabaseSet>>
@@ -79,6 +82,9 @@ interface DatabaseDao {
     @Update(entity = DatabaseExerciseType::class)
     suspend fun updateExerciseType(exerciseType: DatabaseExerciseType)
 
+    @Update(entity = DatabaseExercise::class)
+    suspend fun updateExercise(exercise: DatabaseExercise)
+
     @Query("DELETE FROM DatabaseProgram WHERE id =:id")
     suspend fun deleteProgram(id: Long)
 
@@ -95,5 +101,14 @@ interface DatabaseDao {
     suspend fun deleteExerciseSet(id: Long)
 
     @Query("SELECT MAX(indexNumber) FROM DatabaseExercise WHERE workoutId =:workoutId")
-    suspend fun getLastExerciseSetIndex(workoutId: Long): Int?
+    suspend fun getLastExerciseIndex(workoutId: Long): Int?
+
+    @Query("SELECT MAX(indexNumber) FROM DatabaseSet WHERE exerciseId =:exerciseId")
+    suspend fun getLastSetIndexInExercise(exerciseId: Long): Int?
+
+    @Query("DELETE FROM DatabaseSet WHERE exerciseId =:exerciseId AND indexNumber = (SELECT MAX(indexNumber) FROM DatabaseSet)")
+    suspend fun deleteLastSetInExercise(exerciseId: Long)
+
+    @Query("DELETE FROM DatabaseSet WHERE exerciseId =:exerciseId")
+    suspend fun deleteAllSetsInExercise(exerciseId: Long)
 }

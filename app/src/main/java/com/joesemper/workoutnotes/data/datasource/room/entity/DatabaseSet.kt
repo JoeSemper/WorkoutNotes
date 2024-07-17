@@ -17,7 +17,7 @@ import androidx.room.PrimaryKey
 data class DatabaseSet(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     @ColumnInfo val exerciseId: Long = 0,
-    @ColumnInfo val index: Int = 0,
+    @ColumnInfo val indexNumber: Int = 0,
     @ColumnInfo val weight: Int = 0,
     @ColumnInfo val repetitions: Int = 0,
     @ColumnInfo val sets: Int = 0

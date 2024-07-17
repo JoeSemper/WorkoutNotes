@@ -3,7 +3,6 @@ package com.joesemper.workoutnotes.data.datasource.repository
 import com.joesemper.workoutnotes.data.datasource.room.dao.DatabaseDao
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseType
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExercise
-import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseWithExerciseType
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseProgram
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseSet
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseWorkout
@@ -42,6 +41,9 @@ class WorkoutRepositoryImpl @Inject constructor(
     override suspend fun getExerciseById(exerciseId: Long) =
         databaseDao.getExerciseById(exerciseId)
 
+    override suspend fun getExerciseIndexById(exerciseId: Long): Int =
+        databaseDao.getExerciseIndexById(exerciseId) ?: 0
+
     override suspend fun insertProgram(program: DatabaseProgram) =
         databaseDao.insertProgram(program)
 
@@ -70,6 +72,9 @@ class WorkoutRepositoryImpl @Inject constructor(
     override suspend fun updateExerciseType(exerciseType: DatabaseExerciseType) =
         databaseDao.updateExerciseType(exerciseType)
 
+    override suspend fun updateExercise(exercise: DatabaseExercise) =
+        databaseDao.updateExercise(exercise)
+
     override suspend fun deleteProgram(id: Long) = databaseDao.deleteProgram(id)
 
     override suspend fun deleteSet(id: Long) = databaseDao.deleteSet(id)
@@ -80,6 +85,15 @@ class WorkoutRepositoryImpl @Inject constructor(
 
     override suspend fun deleteExerciseSet(id: Long) = databaseDao.deleteExerciseSet(id)
 
-    override suspend fun getLastExerciseSetIndex(workoutId: Long) =
-        databaseDao.getLastExerciseSetIndex(workoutId) ?: 0
+    override suspend fun getLastExerciseIndex(workoutId: Long) =
+        databaseDao.getLastExerciseIndex(workoutId) ?: 0
+
+    override suspend fun getLastSetIndexInExercise(exerciseId: Long) =
+        databaseDao.getLastSetIndexInExercise(exerciseId) ?: 0
+
+    override suspend fun deleteLastSetInExercise(exerciseId: Long) =
+        databaseDao.deleteLastSetInExercise(exerciseId)
+
+    override suspend fun deleteAllSetsInExercise(exerciseId: Long) =
+        databaseDao.deleteAllSetsInExercise(exerciseId)
 }
