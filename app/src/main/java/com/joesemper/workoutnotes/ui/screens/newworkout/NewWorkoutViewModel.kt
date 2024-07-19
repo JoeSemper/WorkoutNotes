@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.joesemper.workoutnotes.data.datasource.repository.WorkoutRepository
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseExerciseWithExerciseType
 import com.joesemper.workoutnotes.data.datasource.room.entity.DatabaseWorkout
+import com.joesemper.workoutnotes.domain.usecase.GenerateWorkoutNameUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NewWorkoutViewModel @Inject constructor(
-    private val repository: WorkoutRepository
+    private val repository: WorkoutRepository,
+    private val generateWorkoutName: GenerateWorkoutNameUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow<NewWorkoutUiState>(NewWorkoutUiState.Loading)
@@ -51,12 +53,12 @@ class NewWorkoutViewModel @Inject constructor(
 
 }
 
-private fun generateWorkoutName(): String {
-    val date = Calendar.getInstance().time
-    val formatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT)
-    return "Workout ${formatter.format(date)}"
-
-}
+//private fun generateWorkoutName(): String {
+//    val date = Calendar.getInstance().time
+//    val formatter = SimpleDateFormat.getDateInstance(SimpleDateFormat.SHORT)
+//    return "Workout ${formatter.format(date)}"
+//
+//}
 
 sealed class NewWorkoutUiState() {
     object Loading : NewWorkoutUiState()

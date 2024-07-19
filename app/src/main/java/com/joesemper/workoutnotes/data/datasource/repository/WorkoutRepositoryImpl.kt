@@ -96,4 +96,6 @@ class WorkoutRepositoryImpl @Inject constructor(
 
     override suspend fun deleteAllSetsInExercise(exerciseId: Long) =
         databaseDao.deleteAllSetsInExercise(exerciseId)
+
+    override suspend fun getAllWorkoutNames(): List<String> = databaseDao.getAllWorkoutNames()
 }

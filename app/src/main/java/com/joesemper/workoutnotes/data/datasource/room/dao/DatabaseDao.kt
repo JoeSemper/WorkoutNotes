@@ -111,4 +111,7 @@ interface DatabaseDao {
 
     @Query("DELETE FROM DatabaseSet WHERE exerciseId =:exerciseId")
     suspend fun deleteAllSetsInExercise(exerciseId: Long)
+
+    @Query("SELECT title FROM DatabaseWorkout")
+    suspend fun getAllWorkoutNames(): List<String>
 }

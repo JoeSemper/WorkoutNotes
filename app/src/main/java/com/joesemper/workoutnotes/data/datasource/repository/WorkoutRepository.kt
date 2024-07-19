@@ -42,4 +42,5 @@ interface WorkoutRepository {
     suspend fun getLastSetIndexInExercise(exerciseId: Long): Int?
     suspend fun deleteLastSetInExercise(exerciseId: Long)
     suspend fun deleteAllSetsInExercise(exerciseId: Long)
+    suspend fun getAllWorkoutNames(): List<String>
 }
